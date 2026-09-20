@@ -250,18 +250,21 @@
 
     #studi-kasus .typing-title {
       display: inline-block;
-      width: 0;
+      width: auto;
+      max-width: calc(100% + 0.25rem);
       white-space: nowrap;
-      overflow: hidden;
-      border-right: 2px solid rgba(8, 120, 76, 0.8);
+      overflow: visible;
+      border-right: none;
       vertical-align: bottom;
-      animation: typingCaret 0.75s step-end infinite;
-      animation-delay: 0.2s;
+      line-height: 1.15;
+      opacity: 1;
+      letter-spacing: -0.04em;
     }
 
     #studi-kasus .typing-title.is-visible {
-      width: fit-content;
-      animation: typingSequence 1.8s steps(28, end) 1 forwards, typingCaret 0.75s step-end infinite 1.8s;
+      width: auto;
+      max-width: calc(100% + 0.25rem);
+      animation: none;
     }
 
     .case-item {
@@ -306,6 +309,16 @@
       }
     }
 
+    @media (max-width: 640px) {
+      #studi-kasus .typing-title {
+        white-space: normal;
+        max-width: 100%;
+        width: auto;
+        border-right: none;
+        animation: none !important;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       #studi-kasus .case-study-panel,
       #studi-kasus .case-study-panel::before,
@@ -316,6 +329,7 @@
 
       #studi-kasus .typing-title {
         width: auto;
+        max-width: 100%;
         border-right: none;
       }
     }
@@ -463,6 +477,54 @@
 
     .consultation-glass-form > div:last-child {
       color: rgba(236, 253, 245, 0.95);
+    }
+
+    .consultation-success {
+      display: grid;
+      place-items: center;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      padding: 1.25rem;
+      background: rgba(15, 38, 20, 0.48);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .consultation-success.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .consultation-success-card {
+      width: min(100%, 28rem);
+      padding: 2rem;
+      border: 1px solid rgba(167, 243, 208, 0.55);
+      border-radius: 1.5rem;
+      background: linear-gradient(145deg, #ffffff, #f0f8ef);
+      color: #1e3b21;
+      box-shadow: 0 24px 70px rgba(8, 37, 16, 0.28);
+      transform: translateY(1rem) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+
+    .consultation-success.is-open .consultation-success-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .consultation-success-icon {
+      display: grid;
+      place-items: center;
+      width: 3.5rem;
+      height: 3.5rem;
+      margin-bottom: 1rem;
+      border-radius: 9999px;
+      background: #dcfce7;
+      color: #16803c;
+      font-size: 1.35rem;
     }
 
     .select-field-wrap {
@@ -1653,8 +1715,7 @@
         <!-- Integrated Lead Form -->
         <div
           class="consultation-glass-form relative z-10 max-w-2xl mx-auto backdrop-blur-md p-6 sm:p-8 rounded-3xl border shadow-xl">
-          <form action="#konsultasi" class="space-y-4"
-            onsubmit="event.preventDefault(); alert('Terima kasih! Tim agronom &amp; engineer SmartHydro akan menghubungi nomor WhatsApp Anda dalam &lt;15 menit untuk estimasi ROI.');">
+          <form action="#konsultasi" class="space-y-4" id="consultation-form">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <!-- Full Name -->
               <div class="text-left">
@@ -1708,6 +1769,19 @@
               <i class="fa-solid fa-check text-emerald-300"></i>
               <span>100% Kerahasiaan data terjamin</span>
             </div>
+          </div>
+        </div>
+        <div aria-hidden="true" aria-labelledby="success-title" aria-modal="true" class="consultation-success"
+          id="consultation-success" role="dialog">
+          <div class="consultation-success-card">
+            <div class="consultation-success-icon"><i class="fa-solid fa-check"></i></div>
+            <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Permintaan diterima</p>
+            <h3 class="mb-3 font-heading text-2xl font-bold" id="success-title">Terima kasih sudah menghubungi kami</h3>
+            <p class="text-sm leading-relaxed text-neutral-600">Tim agronom dan engineer SmartHydro akan menghubungi nomor WhatsApp Anda dalam waktu kurang dari 15 menit untuk membahas estimasi ROI.</p>
+            <button class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hydro-dark px-5 py-3 text-sm font-bold text-white transition hover:bg-hydro-primary focus:outline-none focus:ring-4 focus:ring-emerald-200" id="close-consultation-success" type="button">
+              <span>Sip, saya tunggu</span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -1777,7 +1851,7 @@
             </li>
             <li class="flex items-center gap-3">
               <i class="fa-solid fa-phone text-emerald-300"></i>
-              <span>+62 (021) 555-4321 / +62 812-3456-7890</span>
+              <span>+62 895 0377 5509</span>
             </li>
             <li class="flex items-center gap-3">
               <i class="fa-solid fa-envelope text-emerald-300"></i>
@@ -1805,13 +1879,41 @@
   <aside class="whatsapp-fab fixed bottom-6 right-6 z-50">
     <a aria-label="Konsultasi WhatsApp"
       class="flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-3 sm:px-5 sm:py-3.5 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 group focus:outline-none focus:ring-4 focus:ring-emerald-300"
-      href="https://api.whatsapp.com/send?phone=6281234567890&amp;text=Halo%20SmartHydro,%20saya%20tertarik%20dengan%20jasa%20instalasi%20Smart%20Farming%20hidroponik.%20Bisa%20konsultasi%20paket%20dan%20proposalnya?"
+      href="https://api.whatsapp.com/send?phone=6289503775509&amp;text=Halo%20SmartHydro,%20saya%20tertarik%20dengan%20jasa%20instalasi%20Smart%20Farming%20hidroponik.%20Bisa%20konsultasi%20paket%20dan%20proposalnya?"
       rel="noopener noreferrer" target="_blank">
       <i class="fa-brands fa-whatsapp text-2xl"></i>
       <span class="font-heading font-semibold text-xs sm:text-sm tracking-wide">Chat Sales</span>
     </a>
   </aside>
   <script>
+    const consultationForm = document.getElementById('consultation-form');
+    const consultationSuccess = document.getElementById('consultation-success');
+    const closeConsultationSuccess = document.getElementById('close-consultation-success');
+
+    const closeSuccessMessage = () => {
+      consultationSuccess.classList.remove('is-open');
+      consultationSuccess.setAttribute('aria-hidden', 'true');
+    };
+
+    if (consultationForm && consultationSuccess && closeConsultationSuccess) {
+      consultationForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        consultationSuccess.classList.add('is-open');
+        consultationSuccess.setAttribute('aria-hidden', 'false');
+        closeConsultationSuccess.focus();
+      });
+
+      closeConsultationSuccess.addEventListener('click', closeSuccessMessage);
+      consultationSuccess.addEventListener('click', (event) => {
+        if (event.target === consultationSuccess) closeSuccessMessage();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && consultationSuccess.classList.contains('is-open')) {
+          closeSuccessMessage();
+        }
+      });
+    }
+
     function openDemoDashboard(event) {
       event.preventDefault();
       if (window.location.protocol === 'file:') {
@@ -1890,18 +1992,51 @@
     const studyCaseSection = document.getElementById('studi-kasus');
     const studyCaseTitle = document.querySelector('#studi-kasus .typing-title');
 
-    if (studyCaseTitle && !reducedMotion) {
-      const typingObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          studyCaseTitle.classList.add('is-visible');
-          typingObserver.unobserve(entry.target);
-        });
-      }, { threshold: 0.45 });
+    if (studyCaseTitle && studyCaseSection) {
+      const typingText = studyCaseTitle.dataset.text || studyCaseTitle.textContent.trim();
+      studyCaseTitle.textContent = '';
+      studyCaseTitle.setAttribute('aria-label', typingText);
 
-      typingObserver.observe(studyCaseSection);
-    } else if (studyCaseTitle) {
-      studyCaseTitle.classList.add('is-visible');
+      if (!reducedMotion) {
+        let started = false;
+
+        const startTyping = () => {
+          if (started) return;
+          started = true;
+
+          let index = 0;
+          const typeNextCharacter = () => {
+            if (index <= typingText.length) {
+              studyCaseTitle.textContent = typingText.slice(0, index);
+              index += 1;
+
+              if (index <= typingText.length) {
+                window.setTimeout(typeNextCharacter, 45);
+              } else {
+                studyCaseTitle.classList.add('is-visible');
+              }
+            }
+          };
+
+          typeNextCharacter();
+        };
+
+        const checkVisible = () => {
+          const rect = studyCaseSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+            startTyping();
+            window.removeEventListener('scroll', checkVisible);
+            window.removeEventListener('resize', checkVisible);
+          }
+        };
+
+        checkVisible();
+        window.addEventListener('scroll', checkVisible, { passive: true });
+        window.addEventListener('resize', checkVisible);
+      } else {
+        studyCaseTitle.textContent = typingText;
+        studyCaseTitle.classList.add('is-visible');
+      }
     }
   </script>
 </body>
