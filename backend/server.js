@@ -14,6 +14,8 @@ const multer = require('multer');
 const mqtt = require('mqtt');
 const crypto = require('crypto');
 
+const projectRoot = path.resolve(__dirname, '..');
+
 // Load environment variables
 dotenv.config();
 
@@ -33,9 +35,9 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(projectRoot, 'public')));
 
-const uploadDir = path.join(__dirname, 'public', 'uploads');
+const uploadDir = path.join(projectRoot, 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -340,7 +342,7 @@ function createAlertMessage(data) {
 
 // Landing Page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(projectRoot, 'public', 'index.html'));
 });
 
 // Login page
@@ -349,7 +351,7 @@ app.get('/login', (req, res) => {
   if (session) {
     return res.redirect('/dashboard');
   }
-  res.sendFile(path.join(__dirname, 'admin', 'login.html'));
+  res.sendFile(path.join(projectRoot, 'login', 'index.html'));
 });
 
 // Login API
@@ -403,9 +405,9 @@ app.post('/signup', (req, res) => {
   return res.status(201).json({ success: true, message: 'Akun berhasil dibuat. Silakan masuk untuk melanjutkan.' });
 });
 
-// Dashboard
-app.get('/dashboard', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+// Dashboard frontend demo
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(projectRoot, 'views', 'dashboard.html'));
 });
 
 // Logout
@@ -608,7 +610,9 @@ io.on('connection', (socket) => {
   });
 });
 
-initMqttClient();
+if (require.main === module) {
+  initMqttClient();
+}
 
 // ===== Error Handling =====
 app.use((err, req, res, next) => {
@@ -621,14 +625,16 @@ app.use((err, req, res, next) => {
 });
 
 // ===== Start Server =====
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n╔════════════════════════════════════════════════╗`);
-  console.log(`║   🌱 RSV Hydro-sense IoT Backend Server        ║`);
-  console.log(`║   Port: ${PORT}${' '.repeat(39 - PORT.toString().length)}║`);
-  console.log(`║   Mode: ${process.env.NODE_ENV || 'development'}${' '.repeat(35)}║`);
-  console.log(`╚════════════════════════════════════════════════╝\n`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n╔════════════════════════════════════════════════╗`);
+    console.log(`║   🌱 RSV Hydro-sense IoT Backend Server        ║`);
+    console.log(`║   Port: ${PORT}${' '.repeat(39 - PORT.toString().length)}║`);
+    console.log(`║   Mode: ${process.env.NODE_ENV || 'development'}${' '.repeat(35)}║`);
+    console.log(`╚════════════════════════════════════════════════╝\n`);
+  });
+}
 
 // Export tunggal untuk runtime Serverless Vercel
 module.exports = app;

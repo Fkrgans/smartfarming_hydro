@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>RFV Hydro-sense | Dashboard</title>
+<title>SmartHydro | Dashboard Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -162,7 +162,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 .sb-logout:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)}
 
 /* ── MAIN ─── */
-#main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px 32px}
+#main{flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:22px 24px 32px}
 #main::-webkit-scrollbar{width:5px}
 #main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
@@ -199,12 +199,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 .mc-danger{color:var(--red)}
 
 /* ── CHARTS ROW ─── */
-.charts-row{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:18px}
+.charts-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:14px;margin-bottom:18px;min-width:0}
+.charts-row > .chart-card{min-width:0}
+.chart-card canvas{display:block;max-width:100%}
  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 22px}
-.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;margin-bottom:16px}
 .chart-title{font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:700;color:var(--text)}
 .chart-subtitle{font-size:.72rem;color:var(--muted);margin-top:2px}
-.chart-legend{display:flex;align-items:center;gap:12px}
+.chart-legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
 .cl-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--muted)}
 .panel-analytics .ctrl-card{background:#071c32;border-color:rgba(255,255,255,.08)}
 .panel-analytics .ctrl-card .ctrl-header{color:#e8edf5}
@@ -329,17 +331,149 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 .panel{animation:pfIn .3s ease}
 @keyframes pfIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
+/* Liquid glass demo theme */
+body.liquid-glass-dashboard,
+body.liquid-glass-dashboard.light{
+  --bg:#eef3f0;
+  --sb-bg:rgba(255,255,255,.68);
+  --card:rgba(255,255,255,.62);
+  --card2:rgba(255,255,255,.78);
+  --border:rgba(255,255,255,.72);
+  --border2:rgba(118,137,126,.24);
+  --text:#183325;
+  --muted:#5d7065;
+  --muted2:#829188;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255,255,255,.95), transparent 30%),
+    radial-gradient(circle at 100% 100%, rgba(173,207,187,.48), transparent 35%),
+    linear-gradient(135deg,#f7faf8 0%,#e7efea 100%);
+}
+
+body.liquid-glass-dashboard #topbar,
+body.liquid-glass-dashboard #sidebar,
+body.liquid-glass-dashboard .mcard,
+body.liquid-glass-dashboard .chart-card,
+body.liquid-glass-dashboard .ctrl-card,
+body.liquid-glass-dashboard .sensor-card,
+body.liquid-glass-dashboard .quick-panel,
+body.liquid-glass-dashboard .user-menu,
+body.liquid-glass-dashboard .tb-search input,
+body.liquid-glass-dashboard .tb-icon-btn,
+body.liquid-glass-dashboard .tb-user,
+body.liquid-glass-dashboard .sb-user-card,
+body.liquid-glass-dashboard .ctrl-row,
+body.liquid-glass-dashboard .billing-panel .bill-card,
+body.liquid-glass-dashboard .modal-box,
+body.liquid-glass-dashboard .modal-field input,
+body.liquid-glass-dashboard .photo-preview-wrapper{
+  background:rgba(255,255,255,.58);
+  border-color:rgba(255,255,255,.76);
+  box-shadow:0 14px 34px rgba(55,83,67,.1), inset 0 1px 0 rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+  backdrop-filter:blur(18px) saturate(135%);
+}
+
+body.liquid-glass-dashboard #topbar{background:rgba(255,255,255,.72)}
+body.liquid-glass-dashboard #sidebar{background:rgba(247,251,248,.66)}
+body.liquid-glass-dashboard .nav-item:hover,
+body.liquid-glass-dashboard .quick-action:hover,
+body.liquid-glass-dashboard .user-menu-item:hover{background:rgba(44,85,48,.07)}
+body.liquid-glass-dashboard .nav-item.active{background:rgba(16,185,129,.13);border-color:rgba(16,185,129,.24)}
+body.liquid-glass-dashboard .mcard:hover,
+body.liquid-glass-dashboard .chart-card:hover,
+body.liquid-glass-dashboard .ctrl-card:hover{box-shadow:0 18px 40px rgba(55,83,67,.16),inset 0 1px 0 rgba(255,255,255,.96)}
+body.liquid-glass-dashboard .mcard-bar-track{background:rgba(24,51,37,.1)}
+body.liquid-glass-dashboard .modal{background:rgba(222,235,227,.48);backdrop-filter:blur(8px)}
+body.liquid-glass-dashboard .modal-actions .staff-btn.secondary{background:rgba(255,255,255,.58);border-color:var(--border2)}
+body.liquid-glass-dashboard #loader{background:#eef3f0}
+body.liquid-glass-dashboard #loader p[style*="color:#f1f5f9"]{color:#183325 !important}
+body.liquid-glass-dashboard #loader p[style*="rgba(255,255,255,.25)"]{color:#829188 !important}
+body.liquid-glass-dashboard #panel-staff,
+body.liquid-glass-dashboard #panel-billing,
+body.liquid-glass-dashboard #panel-grow,
+body.liquid-glass-dashboard #growplan-modal,
+body.liquid-glass-dashboard #invite-modal{display:none !important}
+
 /* ── OVERVIEW PANEL specific grid fix ─── */
 @media(max-width:1100px){.metrics-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}}
 @media(max-width:860px){.bottom-row{grid-template-columns:1fr}}
+
+@media(max-width:1100px){
+  #topbar{gap:8px;padding-right:12px}
+  .tb-left{width:180px;padding-left:14px;padding-right:12px}
+  .tb-breadcrumb{display:none}
+  .tb-search{max-width:180px;margin-left:0}
+  .tb-datetime{font-size:.68rem}
+  .tb-datetime #tb-date{display:none}
+  .live-badge{display:none}
+  .tb-user-info{display:none}
+  .tb-user{padding:5px;max-width:170px}
+  .tb-qa{padding:7px 10px}
+  #main{padding-left:18px;padding-right:18px}
+}
+
+@media(max-width:860px){
+  #topbar{padding:0 10px;gap:6px}
+  .tb-left{width:auto;flex:1 1 auto;min-width:0;padding:0 8px 0 0;border-right:0}
+  .logo-wrap{min-width:0;flex:1 1 auto}
+  .tb-datetime{display:flex;align-items:center;gap:4px;font-size:.58rem;max-width:120px}
+  .tb-datetime #tb-date{display:none}
+  .tb-datetime .tb-sep{display:none}
+  .live-badge{display:flex;font-size:.55rem;padding:3px 8px}
+  .tb-user{
+    flex-shrink:0;
+    max-width:150px;
+    min-width:0;
+    padding:5px 7px 5px 5px;
+  }
+  .tb-user-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+
+@media(max-width:560px){
+  #topbar{
+    height:54px;
+    padding:0 8px;
+    gap:6px;
+    min-width:0;
+    overflow:hidden;
+  }
+  #topbar > *{min-width:0}
+  .logo-text{font-size:.72rem}
+  .logo-icon{width:30px;height:30px;font-size:.9rem}
+  .tb-collapse{width:30px;height:30px;margin-left:auto}
+  .tb-search,.tb-qa{display:none}
+  .tb-datetime{display:flex;flex:1 1 auto;justify-content:center;font-size:.54rem;min-width:0}
+  .tb-datetime strong{font-size:.56rem}
+  .live-badge{display:flex;flex-shrink:0;padding:3px 7px;font-size:.5rem}
+  .tb-icon-btn{width:32px;height:32px}
+  .tb-user{
+    max-width:86px;
+    padding:4px 6px 4px 4px;
+  }
+  .tb-user-name{display:none}
+  .tb-user-role{display:none}
+  #sidebar{position:fixed;top:54px;bottom:0;left:0;width:220px;z-index:60;transform:translateX(-105%);transition:transform .25s ease,box-shadow .25s ease}
+  body.sidebar-open #sidebar{transform:translateX(0);box-shadow:18px 0 40px rgba(55,83,67,.18)}
+  #main{padding:16px 12px 28px}
+  .metrics-grid{grid-template-columns:1fr;gap:10px}
+  .sensor-grid{grid-template-columns:1fr}
+  .welcome-bar{align-items:flex-start}
+  .welcome-text h2{font-size:1.2rem}
+  .chart-card,.ctrl-card{padding:16px}
+  .photo-panel{grid-template-columns:1fr}
+}
 </style>
 </head>
-<body>
+<body class="light liquid-glass-dashboard">
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="ld-ring">🌱</div>
-  <p style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#f1f5f9;letter-spacing:-.02em">RFV Hydro-sense</p>
+  <div class="ld-ring"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div>
+  <p style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#f1f5f9;letter-spacing:-.02em">SmartHydro</p>
   <p style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:#34d399;letter-spacing:.18em;text-transform:uppercase;margin-top:3px">Initializing Dashboard...</p>
   <div class="ld-bar"><div class="ld-fill" id="ld-fill"></div></div>
   <p style="font-size:.68rem;color:rgba(255,255,255,.25);margin-top:7px" id="ld-status">Connecting to dashboard IoT...</p>
@@ -350,23 +484,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
   <!-- Logo + collapse -->
   <div class="tb-left">
     <div class="logo-wrap">
-      <div class="logo-icon">R</div>
-      <div class="logo-text">RFV<br>Hydro-sense</div>
+      <div class="logo-icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div>
+      <div class="logo-text">Smart<br>Hydro</div>
     </div>
     <button class="tb-collapse" id="sidebar-toggle" title="Toggle sidebar">‹</button>
   </div>
 
   <!-- Breadcrumb -->
   <div class="tb-breadcrumb">
-    <span style="color:var(--muted)">RFV</span>
+    <span style="color:var(--muted)">SmartHydro</span>
     <span style="color:var(--muted2);font-size:.8rem">›</span>
-    <span id="tb-role-label">Administrator</span>
-  </div>
-
-  <!-- Search -->
-  <div class="tb-search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" placeholder="Search sensors, controls...   ⌘K">
+    <span id="tb-role-label">Demo Mode</span>
   </div>
 
   <!-- Datetime -->
@@ -377,36 +505,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <span id="tb-date">---</span>
   </div>
 
-  <!-- Quick Actions -->
-  <div class="quick-actions-wrap">
-    <button class="tb-qa" onclick="toggleQuickActions(event)">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Quick Actions
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-    <div id="quick-panel" class="quick-panel" aria-hidden="true">
-      <div class="quick-panel-head">Quick Actions</div>
-      <button type="button" class="quick-action" onclick="quickAction('analytics')">View Analytics</button>
-      <button type="button" class="quick-action" onclick="quickAction('export')">Export CSV</button>
-      <button type="button" class="quick-action" onclick="quickAction('invite')" data-admin-only="true">Invite Staff</button>
-      <button type="button" class="quick-action" onclick="quickAction('theme')">Toggle Theme</button>
-    </div>
-  </div>
-
   <!-- Live badge -->
   <div class="live-badge">
     <span class="pulse-dot"></span>
     LIVE · <span id="tb-live-time">--:--:--</span>
   </div>
 
-  <!-- Notifications -->
-  <button class="tb-icon-btn" title="Show notifications" aria-label="Notifications" onclick="showToast('2 new alerts','warn')">
-    <span class="badge">2</span>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-  </button>
-
   <!-- Theme toggle -->
-  <button class="tb-icon-btn" id="theme-btn" title="Toggle theme" aria-label="Toggle theme" onclick="toggleTheme()">
+  <button class="tb-icon-btn" id="theme-btn" title="Toggle theme" aria-label="Toggle theme" onclick="toggleTheme()" style="display:none">
     <svg id="theme-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
   </button>
 
@@ -414,8 +520,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
   <div class="tb-user" id="user-pill" onclick="toggleUserMenu(event)">
     <div class="tb-avatar" id="tb-avatar-top">A</div>
     <div class="tb-user-info">
-      <div class="tb-user-name" id="tb-user-name">Admin RFV</div>
-      <div class="tb-user-role">Administrator</div>
+      <div class="tb-user-name" id="tb-user-name">SmartHydro Demo</div>
+      <div class="tb-user-role">Demo Mode</div>
     </div>
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     <div id="user-menu" class="user-menu" aria-hidden="true">
@@ -465,28 +571,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
       <span class="nav-label">Alerts</span>
       <span class="nav-badge nb-blue">5</span>
     </a>
-    <a class="nav-item" data-tab="grow">
-      <div class="nav-icon"><i class="fa-solid fa-seedling"></i></div>
-      <span class="nav-label">Grow Plans</span>
-    </a>
-    <a class="nav-item" data-tab="billing" data-admin-only="true">
-      <div class="nav-icon"><i class="fa-solid fa-credit-card"></i></div>
-      <span class="nav-label">Billing</span>
-      <span class="nav-badge nb-blue" id="billingNavBadge" style="display:none;">0</span>
-    </a>
-
-    <div class="sb-section" style="margin-top:4px">System</div>
-    <a class="nav-item" data-tab="staff" data-admin-only="true">
-      <div class="nav-icon"><i class="fa-solid fa-users-gear"></i></div>
-      <span class="nav-label">Staff Access</span>
-    </a>
-
     <div class="sb-bottom">
       <div class="sb-user-card">
         <div class="sb-avatar">AR</div>
         <div class="sb-user-info">
-          <div class="sb-user-name">Admin RFV</div>
-          <div class="sb-user-role">Administrator</div>
+          <div class="sb-user-name">SmartHydro Demo</div>
+          <div class="sb-user-role">Demo Mode</div>
         </div>
         <button class="sb-logout" onclick="logout()" title="Logout">
           <i class="fa-solid fa-right-from-bracket"></i>
@@ -501,12 +591,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <!-- Welcome -->
     <div class="welcome-bar">
       <div class="welcome-text">
-        <h2 id="welcome-heading">Welcome back, <em>Admin!</em></h2>
+        <h2 id="welcome-heading">Welcome to <em>SmartHydro</em></h2>
         <p id="welcome-subtitle">Here's what's happening at your hydroponic system today.</p>
       </div>
       <div class="welcome-pills">
         <button id="rolePill" class="pill-btn pill-admin">
-          <span>Administrator</span>
+          <span>Demo Mode</span>
         </button>
         <button class="pill-btn pill-notif" onclick="showToast('5 new alerts','warn')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -531,7 +621,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               </div>
               <div class="mcard-sub" id="mc-ph-sub">Optimal range · 5.5–7.0</div>
             </div>
-            <div class="mcard-icon" style="background:rgba(16,185,129,.12)">🧪</div>
+            <div class="mcard-icon" style="background:rgba(16,185,129,.12)"><i class="fa-solid fa-flask-vial" aria-hidden="true"></i></div>
           </div>
           <div class="mcard-bar-track"><div class="mcard-bar-fill" id="bar-ph" style="width:63%;background:linear-gradient(90deg,#059669,#34d399)"></div></div>
           <div class="mcard-foot mc-accent" id="foot-ph">✓ Optimal</div>
@@ -547,7 +637,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               </div>
               <div class="mcard-sub">Target: 1200–1500 ppm</div>
             </div>
-            <div class="mcard-icon" style="background:rgba(6,182,212,.12)">💧</div>
+            <div class="mcard-icon" style="background:rgba(6,182,212,.12)"><i class="fa-solid fa-droplet" aria-hidden="true"></i></div>
           </div>
           <div class="mcard-bar-track"><div class="mcard-bar-fill" id="bar-ppm" style="width:68%;background:linear-gradient(90deg,#0891b2,#67e8f9)"></div></div>
           <div class="mcard-foot" style="color:var(--cyan)">↗ Within target</div>
@@ -563,7 +653,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               </div>
               <div class="mcard-sub" id="mc-temp-sub">Target: 20–34.2°C</div>
             </div>
-            <div class="mcard-icon" style="background:rgba(249,115,22,.12)">🌡️</div>
+            <div class="mcard-icon" style="background:rgba(249,115,22,.12)"><i class="fa-solid fa-temperature-half" aria-hidden="true"></i></div>
           </div>
           <div class="mcard-bar-track"><div class="mcard-bar-fill" id="bar-temp" style="width:55%;background:linear-gradient(90deg,#ea580c,#fb923c)"></div></div>
           <div class="mcard-foot mc-accent" id="foot-temp">Suhu normal</div>
@@ -579,7 +669,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               </div>
               <div class="mcard-sub" id="mc-hum-sub">Target: 40–75%</div>
             </div>
-            <div class="mcard-icon" style="background:rgba(59,130,246,.12)">💨</div>
+            <div class="mcard-icon" style="background:rgba(59,130,246,.12)"><i class="fa-solid fa-wind" aria-hidden="true"></i></div>
           </div>
           <div class="mcard-bar-track"><div class="mcard-bar-fill" id="bar-hum" style="width:66%;background:linear-gradient(90deg,#1d4ed8,#60a5fa)"></div></div>
           <div class="mcard-foot mc-accent" id="foot-hum">Kelembapan ideal</div>
@@ -633,7 +723,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
           <div class="ctrl-header">Hardware Controls</div>
           <div class="ctrl-items">
             <div class="ctrl-row">
-              <div class="ctrl-icon" style="background:rgba(16,185,129,.1)">💧</div>
+              <div class="ctrl-icon" style="background:rgba(16,185,129,.1)"><i class="fa-solid fa-droplet" aria-hidden="true"></i></div>
               <div class="ctrl-info">
                 <div class="ctrl-name">Water Pump</div>
                 <div class="ctrl-desc">Circulation system</div>
@@ -642,7 +732,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               <label class="sw"><input type="checkbox" class="act-toggle" data-act="pump"><div class="sw-track"></div><div class="sw-thumb"></div></label>
             </div>
             <div class="ctrl-row">
-              <div class="ctrl-icon" style="background:rgba(6,182,212,.1)">🧪</div>
+              <div class="ctrl-icon" style="background:rgba(6,182,212,.1)"><i class="fa-solid fa-flask-vial" aria-hidden="true"></i></div>
               <div class="ctrl-info">
                 <div class="ctrl-name">Nutrient Doser</div>
                 <div class="ctrl-desc">Auto PPM adjustment</div>
@@ -651,7 +741,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               <label class="sw"><input type="checkbox" class="act-toggle" data-act="doser"><div class="sw-track"></div><div class="sw-thumb"></div></label>
             </div>
             <div class="ctrl-row">
-              <div class="ctrl-icon" style="background:rgba(245,158,11,.1)">💡</div>
+              <div class="ctrl-icon" style="background:rgba(245,158,11,.1)"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></div>
               <div class="ctrl-info">
                 <div class="ctrl-name">Grow Lights</div>
                 <div class="ctrl-desc">Full-spectrum LED</div>
@@ -660,7 +750,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
               <label class="sw"><input type="checkbox" class="act-toggle" data-act="lights"><div class="sw-track"></div><div class="sw-thumb"></div></label>
             </div>
             <div class="ctrl-row">
-              <div class="ctrl-icon" style="background:rgba(239,68,68,.1)">🌀</div>
+              <div class="ctrl-icon" style="background:rgba(239,68,68,.1)"><i class="fa-solid fa-fan" aria-hidden="true"></i></div>
               <div class="ctrl-info">
                 <div class="ctrl-name">Exhaust Fan</div>
                 <div class="ctrl-desc">Temp/Humidity control</div>
@@ -678,11 +768,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
             <div class="status-pill sp-green"><div class="pulse-dot"></div>Live</div>
           </div>
           <div class="alert-list" id="alert-list">
-            <div class="alert-item a-ok"><span class="a-ico">✅</span>pH level optimal — <strong>6.3 pH</strong></div>
-            <div class="alert-item a-ok"><span class="a-ico">✅</span>Nutrients dalam target — <strong>1231 ppm</strong></div>
-            <div class="alert-item a-warn"><span class="a-ico">⚠️</span>Humidity sedikit rendah — <strong>66%</strong></div>
-            <div class="alert-item a-ok"><span class="a-ico">✅</span>Suhu air normal — <strong>24.6°C</strong></div>
-            <div class="alert-item a-ok"><span class="a-ico">✅</span>Semua sensor terhubung</div>
+            <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>pH level optimal — <strong>6.3 pH</strong></div>
+            <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>Nutrients dalam target — <strong>1231 ppm</strong></div>
+            <div class="alert-item a-warn"><span class="a-ico"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>Humidity sedikit rendah — <strong>66%</strong></div>
+            <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>Suhu air normal — <strong>24.6°C</strong></div>
+            <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>Semua sensor terhubung</div>
           </div>
         </div>
       </div>
@@ -759,12 +849,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
       <div class="ctrl-card" style="max-width:800px">
         <div class="ctrl-header">Hardware Actuators Control</div>
         <div class="ctrl-items">
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(16,185,129,.1)">💧</div><div class="ctrl-info"><div class="ctrl-name">Water Pump</div><div class="ctrl-desc">Main circulation system</div></div><div class="ctrl-status" id="st2-pump" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="pump"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(6,182,212,.1)">🧪</div><div class="ctrl-info"><div class="ctrl-name">Nutrient Doser</div><div class="ctrl-desc">Auto PPM adjustment</div></div><div class="ctrl-status" id="st2-doser" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="doser"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(245,158,11,.1)">💡</div><div class="ctrl-info"><div class="ctrl-name">Grow Lights</div><div class="ctrl-desc">Full-spectrum LED</div></div><div class="ctrl-status" id="st2-lights" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="lights"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(239,68,68,.1)">🌀</div><div class="ctrl-info"><div class="ctrl-name">Exhaust Fan</div><div class="ctrl-desc">Climate control</div></div><div class="ctrl-status" id="st2-fan" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="fan"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(168,85,247,.1)">☀️</div><div class="ctrl-info"><div class="ctrl-name">UV Sterilizer</div><div class="ctrl-desc">Water purification</div></div><div class="ctrl-status" id="st2-uv" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="uv"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(249,115,22,.1)">🌡️</div><div class="ctrl-info"><div class="ctrl-name">pH Dosing Pump</div><div class="ctrl-desc">Auto pH correction</div></div><div class="ctrl-status" id="st2-ph-pump" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="ph-pump"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(16,185,129,.1)"><i class="fa-solid fa-droplet" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">Water Pump</div><div class="ctrl-desc">Main circulation system</div></div><div class="ctrl-status" id="st2-pump" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="pump"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(6,182,212,.1)"><i class="fa-solid fa-flask-vial" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">Nutrient Doser</div><div class="ctrl-desc">Auto PPM adjustment</div></div><div class="ctrl-status" id="st2-doser" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="doser"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(245,158,11,.1)"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">Grow Lights</div><div class="ctrl-desc">Full-spectrum LED</div></div><div class="ctrl-status" id="st2-lights" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="lights"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(239,68,68,.1)"><i class="fa-solid fa-fan" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">Exhaust Fan</div><div class="ctrl-desc">Climate control</div></div><div class="ctrl-status" id="st2-fan" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="fan"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(168,85,247,.1)"><i class="fa-solid fa-sun" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">UV Sterilizer</div><div class="ctrl-desc">Water purification</div></div><div class="ctrl-status" id="st2-uv" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="uv"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+          <div class="ctrl-row"><div class="ctrl-icon" style="background:rgba(249,115,22,.1)"><i class="fa-solid fa-syringe" aria-hidden="true"></i></div><div class="ctrl-info"><div class="ctrl-name">pH Dosing Pump</div><div class="ctrl-desc">Auto pH correction</div></div><div class="ctrl-status" id="st2-ph-pump" style="color:var(--muted)">● OFF</div><label class="sw"><input type="checkbox" class="act-toggle2" data-act="ph-pump"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
         </div>
       </div>
     </div>
@@ -847,19 +937,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
             <div style="display:flex;align-items:center;gap:14px;">
               <div class="tb-avatar" id="profile-avatar-char" style="width:56px;height:56px;font-size:1.2rem;">A</div>
               <div>
-                <div style="font-size:1.1rem;font-weight:800;color:var(--text)" id="profile-fullname">Admin RFV</div>
-                <div style="font-size:.9rem;color:var(--muted)">Administrator</div>
+                <div style="font-size:1.1rem;font-weight:800;color:var(--text)" id="profile-fullname">SmartHydro Demo</div>
+                <div style="font-size:.9rem;color:var(--muted)">Demo Mode</div>
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div><label style="display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px">Profile Name</label><input type="text" id="profile-name" value="Admin RFV" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none"></div>
+              <div><label style="display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px">Profile Name</label><input type="text" id="profile-name" value="SmartHydro Demo" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none"></div>
               <div><label style="display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px">Profile Icon</label><input type="text" id="profile-avatar" maxlength="2" value="A" placeholder="A" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none"></div>
             </div>
           </div>
           <div style="padding:16px;border-radius:14px;background:var(--card2);border:1px solid var(--border2);">
             <div style="font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:8px">Account details</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div><div style="font-size:.68rem;color:var(--muted);">Email</div><div id="profile-email" style="margin-top:4px;color:var(--text)">admin@rfv.com</div></div>
+              <div><div style="font-size:.68rem;color:var(--muted);">Email</div><div id="profile-email" style="margin-top:4px;color:var(--text)">demo@smarthydro.local</div></div>
               <div><div style="font-size:.68rem;color:var(--muted);">Member since</div><div id="profile-joined" style="margin-top:4px;color:var(--text)">Mei 2026</div></div>
             </div>
           </div>
@@ -929,9 +1019,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
           </div>
         </div>
         <div class="alert-list">
-          <div class="alert-item a-ok"><span class="a-ico">✅</span>Semua sensor terhubung dengan baik.</div>
-          <div class="alert-item a-warn"><span class="a-ico">⚠️</span>Kelembapan sedikit rendah pada area grow bed 2.</div>
-          <div class="alert-item a-ok"><span class="a-ico">✅</span>pH dan PPM stabil dalam rentang aman.</div>
+          <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>Semua sensor terhubung dengan baik.</div>
+          <div class="alert-item a-warn"><span class="a-ico"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>Kelembapan sedikit rendah pada area grow bed 2.</div>
+          <div class="alert-item a-ok"><span class="a-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>pH dan PPM stabil dalam rentang aman.</div>
           <div class="alert-item a-err"><span class="a-ico">🚨</span>Periksa koneksi dosing pump jika ada gangguan.</div>
         </div>
       </div>
@@ -1084,17 +1174,18 @@ const S = {
     requests:[],
   },
   user:{
-    name:'Admin RFV',
+    name:'SmartHydro Demo',
     role:'Administrator',
-    email:'admin@example.com',
-    avatar:'A',
+    email:'demo@smarthydro.local',
+    avatar:'S',
     username:'admin',
     password:'admin123',
     joined:'Jan 2025',
   },
 };
 
-const socket = io();
+const DEMO_MODE = true;
+const socket = null;
 let lastRealtimeUpdate = 0;
 let isRealtimeConnected = false;
 
@@ -1108,29 +1199,29 @@ function updateSensorData(data) {
   pushFlowChart();
 }
 
-socket.on('connect', () => {
+socket?.on('connect', () => {
   isRealtimeConnected = true;
   showToast('Dashboard terhubung ke server','success');
   updateSensorPanel();
 });
 
-socket.on('disconnect', () => {
+socket?.on('disconnect', () => {
   isRealtimeConnected = false;
   showToast('Koneksi server terputus','warn');
   updateSensorPanel();
 });
 
-socket.on('updateSensor', (data) => {
+socket?.on('updateSensor', (data) => {
   if (!data) return;
   updateSensorData(data);
   lastRealtimeUpdate = Date.now();
 });
 
-socket.on('sensorAlert', (payload) => {
+socket?.on('sensorAlert', (payload) => {
   if (payload?.message) showToast(payload.message,'danger');
 });
 
-socket.on('hardwareCommand', (payload) => {
+socket?.on('hardwareCommand', (payload) => {
   if (!payload || typeof payload.relay === 'undefined') return;
   const relayId = String(payload.relay);
   const state = !!payload.state;
@@ -1377,6 +1468,11 @@ window.applyTheme=function(theme){
 };
 
 window.toggleTheme=function(){
+  if(DEMO_MODE){
+    applyTheme('light');
+    showToast('Tema liquid glass aktif','success');
+    return;
+  }
   const current=document.body.classList.contains('light') ? 'light' : 'dark';
   const next=current==='light' ? 'dark' : 'light';
   applyTheme(next);
@@ -1411,6 +1507,11 @@ window.previewPhoto=function(event){
 };
 
 window.uploadPhoto=async function(file, preview, placeholder, meta){
+  if(DEMO_MODE){
+    meta.textContent = 'Mode demo: foto hanya ditampilkan di browser.';
+    showToast('Foto hanya tersedia selama demo','info');
+    return;
+  }
   try {
     const formData = new FormData();
     formData.append('photo', file);
@@ -1446,6 +1547,12 @@ window.loadPhotoPreview=async function(){
   const placeholder=document.getElementById('photoPlaceholder');
   const meta=document.getElementById('photoMeta');
   if(!preview || !placeholder || !meta) return;
+  if(DEMO_MODE){
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+    meta.textContent = 'Mode demo: belum ada foto tersimpan.';
+    return;
+  }
 
   try {
     const response = await fetch('/api/photo');
@@ -1475,6 +1582,17 @@ window.clearPhoto=async function(){
   const placeholder=document.getElementById('photoPlaceholder');
   const meta=document.getElementById('photoMeta');
   if(!preview || !placeholder || !meta) return;
+
+  if(DEMO_MODE){
+    preview.src = '';
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+    meta.textContent = 'Mode demo: foto dihapus dari tampilan.';
+    if(input) input.value='';
+    window.currentPhotoUrl=null;
+    showToast('Foto dihapus dari demo','info');
+    return;
+  }
 
   try {
     const response = await fetch('/api/photo', { method:'DELETE' });
@@ -1508,6 +1626,10 @@ window.clearPhoto=async function(){
 };
 
 window.loadTheme=function(){
+  if(DEMO_MODE){
+    applyTheme('light');
+    return;
+  }
   const saved=localStorage.getItem('agroSenseTheme');
   applyTheme(saved==='light' ? 'light' : 'dark');
 };
@@ -1520,7 +1642,7 @@ window.loadPhotoPreview();
 (function(){
   const fill=document.getElementById('ld-fill');
   const stat=document.getElementById('ld-status');
-  const msgs=['Connecting to IoT Node...','Reading sensor values...','Syncing history...','Ready!'];
+  const msgs=DEMO_MODE ? ['Loading demo data...','Preparing interactive preview...','Applying sample values...','Ready!'] : ['Connecting to IoT Node...','Reading sensor values...','Syncing history...','Ready!'];
   let p=0,mi=0;
   const t=setInterval(()=>{
     p+=Math.random()*22; if(p>=100){p=100;clearInterval(t);setTimeout(()=>document.getElementById('loader').classList.add('out'),450);}
@@ -1544,11 +1666,16 @@ tick(); setInterval(tick,1000);
 /* ── SIDEBAR COLLAPSE ── */
 const sb=document.getElementById('sidebar');
 const tc=document.getElementById('sidebar-toggle');
-let sbOpen=true;
+let sbOpen=window.innerWidth>700;
+document.body.classList.toggle('sidebar-open',sbOpen);
 tc.addEventListener('click',()=>{
   sbOpen=!sbOpen;
-  sb.style.width=sbOpen?'var(--sb-w)':'0';
+  if(window.innerWidth>700) sb.style.width=sbOpen?'var(--sb-w)':'0';
+  document.body.classList.toggle('sidebar-open',sbOpen);
   tc.textContent=sbOpen?'‹':'›';
+  requestAnimationFrame(()=>{
+    Object.values(S.charts).forEach(chart=>chart?.resize());
+  });
 });
 
 /* ── NAVIGATION ── */
@@ -1567,6 +1694,8 @@ const panels={
 };
 
 function activatePanel(tab){
+  const hiddenTabs=['staff','billing','grow'];
+  if(hiddenTabs.includes(tab)) tab='overview';
   document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
   const item=document.querySelector(`.nav-item[data-tab="${tab}"]`);
   if(item) item.classList.add('active');
@@ -1867,7 +1996,7 @@ function setupActuators(){
       // sync the other toggle
       document.querySelectorAll(`.act-toggle,.act-toggle2`).forEach(i=>{if(i!==inp&&i.dataset.act===act)i.checked=inp.checked;});
       showToast(`${act.replace('-',' ').toUpperCase()} turned ${inp.checked?'ON':'OFF'}`,inp.checked?'success':'warn');
-      if(act){
+      if(act && !DEMO_MODE){
         fetch('/api/hardware/relay', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
@@ -1889,16 +2018,18 @@ function updateUserUI(){
   const welcomeHeading=document.getElementById('welcome-heading');
   const rolePill=document.getElementById('rolePill');
   const welcomeSubtitle=document.getElementById('welcome-subtitle');
-  const roleText = S.user.role === 'Administrator' ? 'Administrator' : 'Pengguna';
+  const roleText = DEMO_MODE ? 'Demo Mode' : (S.user.role === 'Administrator' ? 'Administrator' : 'Pengguna');
 
-  if(topAvatar) topAvatar.textContent = S.user.avatar || 'A';
-  if(topName) topName.textContent = S.user.name || 'Admin RFV';
-  if(profileAvatar) profileAvatar.textContent = S.user.avatar || 'A';
-  if(profileName) profileName.textContent = S.user.name || 'Admin RFV';
+  if(topAvatar) topAvatar.textContent = S.user.avatar || 'S';
+  if(topName) topName.textContent = S.user.name || 'SmartHydro Demo';
+  if(profileAvatar) profileAvatar.textContent = S.user.avatar || 'S';
+  if(profileName) profileName.textContent = S.user.name || 'SmartHydro Demo';
   if(profileEmail) profileEmail.textContent = S.user.email;
   if(profileJoined) profileJoined.textContent = S.user.joined;
   if(roleLabel) roleLabel.textContent = roleText;
-  if(welcomeHeading) welcomeHeading.innerHTML = `Welcome back, <em>${S.user.name.split(' ')[0] || 'User'}!</em>`;
+  if(welcomeHeading) welcomeHeading.innerHTML = DEMO_MODE
+    ? 'Welcome to <em>SmartHydro</em>'
+    : `Welcome back, <em>${S.user.name.split(' ')[0] || 'User'}!</em>`;
   if(rolePill) rolePill.innerHTML = `<span>${roleText}</span>`;
   if(welcomeSubtitle) welcomeSubtitle.textContent = S.user.role === 'Administrator'
     ? "Here's what's happening at your hydroponic system today."
@@ -1917,13 +2048,19 @@ function isAdmin() {
 }
 
 function applyRoleBasedUI() {
-  const admin = isAdmin();
+  const admin = DEMO_MODE || isAdmin();
   const adminOnly = document.querySelectorAll('[data-admin-only]');
   adminOnly.forEach(el => {
     el.style.display = admin ? '' : 'none';
   });
 
-  if (!admin) {
+  if (DEMO_MODE) {
+    S.user.role = 'Administrator';
+    S.user.name = 'SmartHydro Demo';
+    S.user.email = 'demo@smarthydro.local';
+    S.user.avatar = 'S';
+    S.user.joined = 'Demo Preview';
+  } else if (!admin) {
     S.user.role = 'User';
     S.user.name = 'Pengguna RSV';
     S.user.email = 'user@example.com';
@@ -2113,7 +2250,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ── LOGOUT ── */
-window.logout=function(){showToast('Logging out...','info');setTimeout(()=>{window.location.href='/logout';},900);};
+window.logout=function(){
+  if(DEMO_MODE){
+    showToast('Mode demo selesai','info');
+    setTimeout(()=>{window.location.href='/';},500);
+    return;
+  }
+  showToast('Logging out...','info');
+  setTimeout(()=>{window.location.href='/logout';},900);
+};
 
 /* ── INIT ── */
 window.addEventListener('DOMContentLoaded',()=>{
@@ -2124,18 +2269,20 @@ window.addEventListener('DOMContentLoaded',()=>{
   setupActuators();
   initCharts();
   updateMetrics();
-  fetch('/api/sensor/latest')
-    .then((res) => res.json())
-    .then((data) => {
-      if (data && data.temp !== undefined && data.humidity !== undefined) {
-        updateSensorData(data);
-        lastRealtimeUpdate = Date.now();
-        updateSensorPanel();
-      }
-    })
-    .catch(() => {
-      showToast('Tidak dapat mengambil data sensor awal','warn');
-    });
+  if(!DEMO_MODE){
+    fetch('/api/sensor/latest')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.temp !== undefined && data.humidity !== undefined) {
+          updateSensorData(data);
+          lastRealtimeUpdate = Date.now();
+          updateSensorPanel();
+        }
+      })
+      .catch(() => {
+        showToast('Tidak dapat mengambil data sensor awal','warn');
+      });
+  }
   setInterval(() => {
     if (!isRealtimeConnected) {
       simulate();

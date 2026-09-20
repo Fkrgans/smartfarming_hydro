@@ -222,8 +222,8 @@ socket.on('hardwareCommand', (data) => {
 
 ## 🎯 Component Responsibilities
 
-### Backend (server.js)
-- Express HTTP server on port 3000
+### Backend (backend/server.js)
+- Express HTTP server on port 3000 for local or persistent hosting
 - REST API for sensor data reception
 - Socket.io event broker
 - Data validation
@@ -238,7 +238,8 @@ socket.on('hardwareCommand', (data) => {
 - Navigation links
 
 ### Frontend - Dashboard (views/dashboard.html)
-- Dark theme UI
+- White liquid-glass UI
+- Frontend-only demo mode at `/dashboard?demo=1`
 - Real-time metric display
 - ApexCharts visualization
 - Hardware control switches
@@ -360,6 +361,14 @@ socket.on('hardwareCommand', (data) => {
 - [ ] Enable authentication
 - [ ] Set up monitoring/logging
 - [ ] Plan database schema for production
+
+### Vercel Demo Deployment
+
+- [x] `vercel.json` points to `backend/server.js`
+- [x] Server startup is guarded for serverless imports
+- [x] Landing page and demo dashboard can be deployed to Vercel
+- [ ] Move MQTT and Socket.io to a persistent backend host for live IoT use
+- [ ] Move uploads and sensor history to durable storage for production
 
 ## 📝 Technology Stack Summary
 

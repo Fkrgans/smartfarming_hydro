@@ -24,7 +24,9 @@ rsv-hydrosense/
 │   └── dashboard.html             # 📊 IoT Dashboard (Tailwind CSS)
 ├── 📂 hardware/
 │   └── esp32_nodemcu.ino          # Arduino firmware for ESP32/NodeMCU
-├── 📄 server.js                   # Express + Socket.io backend
+├── 📄 vercel.json                 # Vercel serverless routing
+├── 📂 backend/
+│   └── 📄 server.js               # Express + Socket.io backend
 ├── 📄 package.json                # Dependencies (updated)
 ├── 📄 tailwind.config.js          # Tailwind CSS config
 ├── 📄 postcss.config.js           # PostCSS config
@@ -72,7 +74,7 @@ Expected output:
 
 📍 Available Routes:
    🏠 Landing Page: http://localhost:3000
-   📊 Dashboard: http://localhost:3000/dashboard
+  📊 Demo Dashboard: http://localhost:3000/dashboard?demo=1
    📡 API Sensor: POST http://localhost:3000/api/sensor
    📈 Latest Data: http://localhost:3000/api/sensor/latest
 ```
@@ -80,11 +82,11 @@ Expected output:
 ### Step 4: Access the Application
 
 - **Landing Page**: http://localhost:3000
-- **Dashboard**: http://localhost:3000/dashboard
+- **Demo Dashboard**: http://localhost:3000/dashboard?demo=1
 
 ## 🔧 Core Components
 
-### 1. **Backend Architecture (server.js)**
+### 1. **Backend Architecture (backend/server.js)**
 - Express HTTP server
 - Socket.io for real-time bi-directional communication
 - REST API endpoint: `POST /api/sensor`
@@ -102,7 +104,7 @@ Expected output:
 ### 3. **IoT Dashboard (views/dashboard.html + public/js/dashboard.js)**
 
 #### UI Features:
-- **Dark sidebar** with navigation menu
+- **White liquid-glass dashboard** with responsive navigation
 - **4 metric cards** with real-time values:
   - 🧪 pH Level (ideal: 5.5-7.0)
   - 🧂 Nutrient Level / PPM (target: 1000-1500)
@@ -222,13 +224,13 @@ curl -X POST http://localhost:3000/api/sensor \
 
 ## 📊 Dashboard Features
 
-✅ Real-time metric updates (Socket.io)
+✅ Demo metric updates with mock data
 ✅ Interactive ApexCharts visualization
 ✅ Hardware relay control with toggle switches
 ✅ Connection status indicator
 ✅ Status badges (Optimal/Warning/Critical)
 ✅ System health monitoring
-✅ Responsive dark theme
+✅ Responsive white liquid-glass theme
 ✅ Sub-second latency
 
 ## 🔒 Security Notes
@@ -243,7 +245,8 @@ curl -X POST http://localhost:3000/api/sensor \
 
 | File | Purpose | Status |
 |------|---------|--------|
-| server.js | Main backend | ✅ Ready |
+| backend/server.js | Main backend | ✅ Ready |
+| vercel.json | Vercel routing | ✅ Ready |
 | public/index.html | Landing page | ✅ Ready |
 | views/dashboard.html | Dashboard UI | ✅ Ready |
 | public/js/dashboard.js | Frontend logic | ✅ Ready |
@@ -277,10 +280,22 @@ PORT=3001
 1. ✅ Install dependencies: `npm install`
 2. ✅ Start server: `npm start`
 3. ✅ Visit landing page: http://localhost:3000
-4. ✅ Access dashboard: http://localhost:3000/dashboard
+4. ✅ Access demo dashboard: http://localhost:3000/dashboard?demo=1
 5. ✅ Configure hardware and upload firmware
 6. ✅ Test sensor data transmission
 7. ✅ Monitor real-time updates on dashboard
+
+## ☁️ Vercel Deployment
+
+The landing page and demo dashboard can be deployed to Vercel from the project root:
+
+```bash
+npm install -g vercel
+vercel login
+vercel --prod
+```
+
+Vercel serverless functions do not provide a persistent process for MQTT, Socket.io, in-memory sensor state, or local file uploads. Keep those live IoT features on a VPS or persistent Node.js host.
 
 ## 🎓 Learning Resources
 

@@ -5,7 +5,7 @@ A complete IoT and Agribusiness platform for real-time monitoring and control of
 ## 🌱 Features
 
 - **Real-time Sensor Monitoring**: pH Level, Nutrient Concentration (PPM), Temperature, Humidity
-- **Interactive Dashboard**: Modern dark-themed dashboard with live metrics and charts
+- **Interactive Dashboard**: White liquid-glass demo dashboard with metrics and charts
 - **Hardware Control**: Remote actuator control (pumps, nutrient dosing) via toggle switches
 - **WebSocket Communication**: Sub-second latency data updates via Socket.io
 - **Data Visualization**: ApexCharts line graphs for sensor trends
@@ -32,9 +32,12 @@ rsv-hydrosense/
 │   └── index.html                 # Landing page (Tailwind CSS)
 ├── views/
 │   └── dashboard.html             # IoT Dashboard UI (Tailwind CSS)
+├── login/
+│   └── index.html                 # Login and signup UI
+├── backend/
+│   └── server.js                  # Express API + Socket.io backend
 ├── hardware/
 │   └── esp32_nodemcu.ino          # ESP32 firmware for sensor data transmission
-├── server.js                      # Main Express + Socket.io server
 ├── package.json                   # Node.js dependencies
 ├── tailwind.config.js             # Tailwind CSS configuration
 ├── postcss.config.js              # PostCSS configuration
@@ -101,13 +104,42 @@ TELEGRAM_CHAT_ID=YOUR_TELEGRAM_CHAT_ID
 npm start
 ```
 
+### Mobile API Connection
+
+The backend is available from the same host and keeps the existing API contract:
+
+- Web app: `http://localhost:3000/`
+- Login: `http://localhost:3000/login`
+- Latest sensor data: `GET /api/sensor/latest`
+- Relay control: `GET|POST /api/hardware/relay`
+- Photo management: `GET|POST|DELETE /api/photo`
+
+For a physical mobile device on the same Wi-Fi network, replace `localhost` with the computer's local IPv4 address, for example `http://192.168.1.10:3000`. The server listens on `0.0.0.0` and CORS is enabled for the mobile client.
+
 The server will start at `http://localhost:3000`
 
 ### Access the Application
 
 - **Landing Page**: http://localhost:3000
-- **Dashboard**: http://localhost:3000/dashboard
+- **Demo Dashboard**: http://localhost:3000/dashboard?demo=1
 - **API Endpoint**: `POST http://localhost:3000/api/sensor`
+
+### Demo Mode
+
+The landing page opens the dashboard demo directly with `/dashboard?demo=1`. This mode is a frontend presentation with mock sensor values and does not require login. The dashboard is intended for showcasing the interface, not for operating production hardware.
+
+### Deploy to Vercel
+
+The repository includes `vercel.json` and uses `backend/server.js` as the serverless entry point. Deploy from the project root:
+
+```bash
+npm install -g vercel
+vercel login
+vercel
+vercel --prod
+```
+
+Vercel is suitable for the landing page and demo dashboard. MQTT connections, Socket.io realtime sessions, in-memory sensor state, and uploaded files require a persistent backend host. For a live IoT installation, deploy the Node.js backend on a VPS or another persistent Node.js service and point the ESP32 and dashboard API to that service.
 
 ## 📊 API Endpoints
 
