@@ -145,6 +145,13 @@ const hardwareState = {
   'ph-pump': false
 };
 
+let wateringSchedule = {
+  enabled: false,
+  time: '06:00',
+  durationSeconds: 30
+};
+let lastWateringRun = '';
+
 const mqttConfig = {
   // Use the same broker as the ESP8266 firmware so dashboard relay commands reach the device.
   brokerUrl: process.env.MQTT_BROKER_URL || 'mqtt://broker.hivemq.com:1883',
@@ -247,6 +254,40 @@ function publishMqtt(topic, payload) {
   });
   return true;
 }
+
+function sendRelayCommand(relay, state, source = 'manual') {
+  const relayMessage = {
+    relay: String(relay),
+    state: !!state,
+    source,
+    timestamp: new Date().toISOString()
+  };
+  hardwareState[relayMessage.relay] = relayMessage.state;
+  io.emit('hardwareCommand', relayMessage);
+  if (mqttConnected) {
+    publishMqtt(mqttConfig.relayCommandTopic, relayMessage);
+  }
+  return relayMessage;
+}
+
+function runWateringSchedule() {
+  if (!wateringSchedule.enabled) return;
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5);
+  const runKey = `${now.toISOString().slice(0, 10)} ${currentTime}`;
+  if (currentTime !== wateringSchedule.time || lastWateringRun === runKey) return;
+
+  lastWateringRun = runKey;
+  const duration = wateringSchedule.durationSeconds * 1000;
+  sendRelayCommand('pump', true, 'watering-schedule');
+  console.log(`[Watering] Pump ON at ${currentTime} for ${wateringSchedule.durationSeconds}s`);
+  setTimeout(() => {
+    sendRelayCommand('pump', false, 'watering-schedule');
+    console.log('[Watering] Pump OFF after scheduled watering');
+  }, duration);
+}
+
+setInterval(runWateringSchedule, 1000);
 
 function canSendAlert(key = 'generic') {
   if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
@@ -495,6 +536,25 @@ app.get('/api/telegram/test', (req, res) => {
 
 app.get('/api/hardware/relay', (req, res) => {
   res.json({ success: true, relays: hardwareState });
+});
+
+app.get('/api/watering/schedule', (req, res) => {
+  res.json({ success: true, schedule: wateringSchedule });
+});
+
+app.post('/api/watering/schedule', (req, res) => {
+  const { enabled, time, durationSeconds } = req.body || {};
+  const duration = Number(durationSeconds);
+  if (typeof enabled !== 'boolean' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(String(time)) || !Number.isInteger(duration) || duration < 1 || duration > 3600) {
+    return res.status(400).json({
+      success: false,
+      message: 'Jadwal harus berisi enabled, jam HH:MM, dan durasi 1-3600 detik.'
+    });
+  }
+
+  wateringSchedule = { enabled, time: String(time), durationSeconds: duration };
+  lastWateringRun = '';
+  res.json({ success: true, schedule: wateringSchedule });
 });
 
 app.post('/api/hardware/relay', (req, res) => {

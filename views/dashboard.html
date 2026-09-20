@@ -240,6 +240,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 .sensor-card .pill-ok{color:var(--accent);border-color:rgba(16,185,129,.2)}
 .sensor-card .pill-warn{color:var(--yellow);border-color:rgba(245,158,11,.2)}
 .sensor-card .pill-danger{color:var(--red);border-color:rgba(239,68,68,.2)}
+.watering-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:720px}
+.watering-field{display:flex;flex-direction:column;gap:7px}
+.watering-field label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.watering-field input{width:100%;padding:11px 13px;border:1px solid var(--border2);border-radius:10px;background:var(--card2);color:var(--text);font:600 .9rem 'DM Sans',sans-serif;outline:none}
+.watering-field input:focus{border-color:var(--accent)}
+.watering-toggle{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-size:.82rem;font-weight:700}
+.watering-toggle input{width:17px;height:17px;accent-color:var(--accent)}
+.watering-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem}
+@media(max-width:640px){.watering-form{grid-template-columns:1fr}}
 .staff-table{width:100%;border-collapse:collapse}
 .staff-table th,.staff-table td{padding:12px 14px;font-size:.79rem;color:var(--text);border-bottom:1px solid var(--border)}
 .staff-table th{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -550,6 +559,11 @@ body.liquid-glass-dashboard #invite-modal{display:none !important}
       <div class="nav-icon"><i class="fa-solid fa-sliders"></i></div>
       <span class="nav-label">Controls</span>
     </a>
+    <a class="nav-item" data-tab="watering">
+      <div class="nav-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+      <span class="nav-label">Siram Otomatis</span>
+      <span class="nav-badge nb-green" id="watering-nav-badge">OFF</span>
+    </a>
     <a class="nav-item" data-tab="history">
       <div class="nav-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
       <span class="nav-label">History</span>
@@ -859,6 +873,41 @@ body.liquid-glass-dashboard #invite-modal{display:none !important}
       </div>
     </div>
 
+    <!-- ── AUTOMATIC WATERING PANEL ── -->
+    <div id="panel-watering" class="panel" style="display:none">
+      <div class="ctrl-card" style="max-width:800px">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Siram Otomatis</div>
+            <div class="chart-subtitle">Pompa akan menyala sesuai jam dan durasi yang kamu tentukan.</div>
+          </div>
+          <div class="status-pill sp-green" id="watering-status-pill"><div class="pulse-dot"></div><span id="watering-status-text">Nonaktif</span></div>
+        </div>
+        <div class="watering-form">
+          <div class="watering-field">
+            <label for="watering-time">Jam penyiraman</label>
+            <input id="watering-time" type="time" value="06:00" />
+          </div>
+          <div class="watering-field">
+            <label for="watering-duration">Durasi pompa (detik)</label>
+            <input id="watering-duration" type="number" min="1" max="3600" value="30" />
+          </div>
+          <label class="watering-toggle" for="watering-enabled">
+            <input id="watering-enabled" type="checkbox" />
+            Aktifkan penyiraman otomatis setiap hari
+          </label>
+        </div>
+        <div class="watering-summary">
+          <i class="fa-solid fa-clock" aria-hidden="true"></i>
+          <span id="watering-summary-text">Jadwal belum diaktifkan.</span>
+        </div>
+        <div class="modal-actions" style="justify-content:flex-start;margin-top:18px">
+          <button type="button" class="staff-btn primary" onclick="saveWateringSchedule()"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Simpan Jadwal</button>
+          <button type="button" class="staff-btn secondary" onclick="testWateringPump()"><i class="fa-solid fa-play" aria-hidden="true"></i> Tes Pompa</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ── HISTORY PANEL ── -->
     <div id="panel-history" class="panel" style="display:none">
       <div class="ctrl-card">
@@ -1153,6 +1202,7 @@ const S = {
   ph:6.3, ppm:1231, temp:24.6, hum:66,
   history:[],
   acts:{pump:false,doser:false,lights:false,fan:false,uv:false,'ph-pump':false},
+  wateringSchedule:{enabled:false,time:'06:00',durationSeconds:30},
   charts:{flow:null,donut:null,bar:null},
   thresholds:{minPH:5.5,maxPH:7.0,minPPM:800,maxPPM:1800,minTemp:20,maxTemp:34.2,minHum:40,maxHum:75},
   growPlan:{crop:'Lettuce',phase:'Vegetative',targetEC:'1.25 mS/cm',harvest:'10 days'},
@@ -1184,7 +1234,7 @@ const S = {
   },
 };
 
-const DEMO_MODE = true;
+const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === '1';
 const socket = null;
 let lastRealtimeUpdate = 0;
 let isRealtimeConnected = false;
@@ -1683,6 +1733,7 @@ const panels={
   overview:document.getElementById('panel-overview'),
   sensors: document.getElementById('panel-sensors'),
   control: document.getElementById('panel-control'),
+  watering: document.getElementById('panel-watering'),
   history: document.getElementById('panel-history'),
   analytics:document.getElementById('panel-analytics'),
   billing:document.getElementById('panel-billing'),
@@ -2007,6 +2058,89 @@ function setupActuators(){
   });
 }
 
+function renderWateringSchedule(){
+  const schedule=S.wateringSchedule;
+  const time=document.getElementById('watering-time');
+  const duration=document.getElementById('watering-duration');
+  const enabled=document.getElementById('watering-enabled');
+  const summary=document.getElementById('watering-summary-text');
+  const status=document.getElementById('watering-status-text');
+  const badge=document.getElementById('watering-nav-badge');
+  if(time) time.value=schedule.time;
+  if(duration) duration.value=schedule.durationSeconds;
+  if(enabled) enabled.checked=schedule.enabled;
+  if(summary) summary.textContent=schedule.enabled
+    ? `Aktif setiap hari pukul ${schedule.time} selama ${schedule.durationSeconds} detik.`
+    : 'Jadwal belum diaktifkan.';
+  if(status) status.textContent=schedule.enabled?'Aktif':'Nonaktif';
+  if(badge){badge.textContent=schedule.enabled?'ON':'OFF';badge.className=`nav-badge ${schedule.enabled?'nb-green':'nb-blue'}`;}
+}
+
+function getWateringFormValue(){
+  const time=document.getElementById('watering-time')?.value || '06:00';
+  const duration=Number(document.getElementById('watering-duration')?.value || 30);
+  const enabled=!!document.getElementById('watering-enabled')?.checked;
+  if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(time) || !Number.isInteger(duration) || duration<1 || duration>3600){
+    showToast('Isi jam dan durasi 1-3600 detik dengan benar','danger');
+    return null;
+  }
+  return {enabled,time,durationSeconds:duration};
+}
+
+window.saveWateringSchedule=function(){
+  const schedule=getWateringFormValue();
+  if(!schedule) return;
+  S.wateringSchedule=schedule;
+  localStorage.setItem('smartHydroWateringSchedule',JSON.stringify(schedule));
+  renderWateringSchedule();
+  if(DEMO_MODE){
+    showToast(schedule.enabled?'Jadwal penyiraman disimpan':'Jadwal penyiraman dinonaktifkan','success');
+    return;
+  }
+  fetch('/api/watering/schedule',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(schedule)})
+    .then(res=>res.json().then(data=>({ok:res.ok,data})))
+    .then(({ok,data})=>{if(!ok) throw new Error(data.message||'Gagal menyimpan jadwal');showToast('Jadwal penyiraman disimpan','success');})
+    .catch(()=>showToast('Gagal menyimpan jadwal penyiraman','danger'));
+};
+
+window.testWateringPump=function(){
+  const duration=Math.max(1,Math.min(3600,Number(document.getElementById('watering-duration')?.value||30)));
+  S.acts.pump=true;
+  document.querySelectorAll('.act-toggle,.act-toggle2').forEach(input=>{if(input.dataset.act==='pump')input.checked=true;});
+  ['st-pump','st2-pump'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='● ON';el.style.color='var(--accent)';}});
+  showToast(`Tes pompa berjalan ${duration} detik`,'success');
+  if(!DEMO_MODE){
+    fetch('/api/hardware/relay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({relay:'pump',state:true})});
+  }
+  setTimeout(()=>{
+    S.acts.pump=false;
+    document.querySelectorAll('.act-toggle,.act-toggle2').forEach(input=>{if(input.dataset.act==='pump')input.checked=false;});
+    if(!DEMO_MODE) fetch('/api/hardware/relay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({relay:'pump',state:false})});
+  },duration*1000);
+};
+
+function loadWateringSchedule(){
+  const stored=localStorage.getItem('smartHydroWateringSchedule');
+  if(stored){try{S.wateringSchedule={...S.wateringSchedule,...JSON.parse(stored)};}catch(e){localStorage.removeItem('smartHydroWateringSchedule');}}
+  renderWateringSchedule();
+  if(!DEMO_MODE){
+    fetch('/api/watering/schedule').then(res=>res.json()).then(data=>{
+      if(data.schedule){S.wateringSchedule=data.schedule;renderWateringSchedule();}
+    }).catch(()=>showToast('Jadwal penyiraman belum dapat dimuat','warn'));
+  }
+}
+
+let lastDemoWateringRun='';
+function runDemoWateringSchedule(){
+  if(!DEMO_MODE||!S.wateringSchedule.enabled)return;
+  const now=new Date();
+  const currentTime=now.toTimeString().slice(0,5);
+  const runKey=`${now.toISOString().slice(0,10)} ${currentTime}`;
+  if(currentTime!==S.wateringSchedule.time||lastDemoWateringRun===runKey)return;
+  lastDemoWateringRun=runKey;
+  testWateringPump();
+}
+
 function updateUserUI(){
   const topAvatar=document.getElementById('tb-avatar-top');
   const topName=document.getElementById('tb-user-name');
@@ -2267,6 +2401,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadUserProfile();
   loadAuthSettings();
   setupActuators();
+  loadWateringSchedule();
   initCharts();
   updateMetrics();
   if(!DEMO_MODE){
@@ -2284,6 +2419,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       });
   }
   setInterval(() => {
+    runDemoWateringSchedule();
     if (!isRealtimeConnected) {
       simulate();
     }
